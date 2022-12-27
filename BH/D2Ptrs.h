@@ -429,6 +429,8 @@ VARPTR(D2COMMON, AutoMagicTxt, AutoMagicTxt*, 0x9FBC8, 0xA4CE4)
 VARPTR(D2COMMON, ArmorTxt, ItemsTxt*, 0x9FBA4, 0xA4CC0)
 VARPTR(D2COMMON, ArmorTxtRecords, DWORD, 0x9FBA8, 0xA4CC4)
 
+VARPTR(D2COMMON, InventoryTxt, InventoryTxt*, 0x9FA5C, 0x9FA5C)  //只考虑1.13c
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // D2Common Stubs
@@ -620,11 +622,11 @@ FUNCPTR(D2GAME, SaveSPChar, void __fastcall, (GameStruct* ptGame, UnitAnyHM* ptC
 
 VARPTR(D2GAME, ClientTable, NetClient*, 0x1107B8, 0x1105E0)  //取客户端列表 from PlugY by zyl
 
+VARPTR(D2GAME, PPNums, int, 0x111C1C, 0x111C1C)  //当前pp数 by zyl 
+
 ASMPTR(D2GAME, SendPacket, 0x8A3E0)
 
 ASMPTR(D2GAME, GetObject, 0xE03A0)
-
-
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////

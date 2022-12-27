@@ -54,5 +54,9 @@ namespace BH {
 
 	extern unsigned int stash_left_fix;  //箱子left的offset,写给群友云c
 	extern bool inGameOnce;  //要自己写一个是否进入游戏的选项
+	extern bool inINVENTORY;  //是否在人物背包
+	extern DWORD PD2Addr;
 	//extern void loadSSData();
+
+	extern void  intToByte(int i, BYTE* bytes, int size = 4);
 };

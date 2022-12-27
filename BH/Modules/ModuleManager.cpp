@@ -91,7 +91,7 @@ bool ModuleManager::UserInput(wchar_t* module, wchar_t* msg, bool fromGame) {
 	}
 
 	//if (name.compare("pp") == 0) {  //目前只适用单机，以后再说吧
-	//	D2GAME_D2SetNbPlayers(0x8);
+	//	D2GAME_D2SetNbPlayers(0x7);
 	//	Print("\377c4BH:\377c0 游戏难度设置为PP8！");
 	//}
 

@@ -5,6 +5,7 @@
 #include <cctype>
 #include <vector>
 #include <string>
+#include "../../D2Ptrs.h"
 
 // All the types able to be combined with the + operator
 #define COMBO_STATS					\
@@ -1100,6 +1101,7 @@ void Condition::ProcessConditions(vector<Condition*>& inputConditions,
 	}
 }
 
+vector<Condition*> conditions1;
 void Condition::BuildConditions(vector<Condition*>& conditions,
 	string              token)
 {
@@ -1695,12 +1697,97 @@ bool AffixLevelCondition::EvaluateInternalFromPacket(ItemInfo* info,
 	return IntegerCompare(alvl, operation, affixLevel);
 }
 
+Level* GetLevel(Act* pAct, int level)
+{
+	//Insure that the shit we are getting is good.
+	if (level < 0 || !pAct)
+		return NULL;
+
+	//Loop all the levels in this act
+
+	for (Level* pLevel = pAct->pMisc->pLevelFirst; pLevel; pLevel = pLevel->pNextLevel)
+	{
+		//Check if we have reached a bad level.
+		if (!pLevel)
+			break;
+
+		//If we have found the level, return it!
+		if (pLevel->dwLevelNo == level && pLevel->dwPosX > 0)
+			return pLevel;
+	}
+	//Default old-way of finding level.
+	return D2COMMON_GetLevel(pAct->pMisc, level);
+}
+
+//A1算是解决了吧
+bool inA1Town(Act* pAct,int x, int y) {
+	Level* level = GetLevel(pAct, 1);
+	int x1 = level->dwPosX * 5 + 80;
+	int x2 = x1+160;
+	int y1 = level->dwPosY * 5 + 40;
+	int y2 = y1+120;
+	if (x > x1 && x<x2 && y>y1 && y < y2) {
+		return true;
+	}
+	return false;
+}
+
+//A2 A3 A4 A5  临时用这个吧。mapId暂时先用这个，因为不知道城镇是怎么取的
+bool inA2Town(int x, int y) {
+	int x1 = 5018;
+	int x2 = 5209;
+	int y1 = 5018;
+	int y2 = 5223;
+	if (x>x1&&x<x2&&y>y1&&y<y2) {
+		return true;
+	}
+	return false;
+}
+bool inA3Town(int x, int y) {
+	int x1 = 5027;
+	int x2 = 5270;
+	int y1 = 5007;
+	int y2 = 5188;
+	if (x > x1 && x<x2 && y>y1 && y < y2) {
+		return true;
+	}
+	return false;
+}
+bool inA4Town(int x, int y) {
+	int x1 = 5017;
+	int x2 = 5102;
+	int y1 = 5012;
+	int y2 = 5073;
+	if (x > x1 && x<x2 && y>y1 && y < y2) {
+		return true;
+	}
+	return false;
+}
+bool inA5Town(int x, int y) {
+	int x1 = 5028;
+	int x2 = 5150;
+	int y1 = 5012;
+	int y2 = 5154;
+	if (x > x1 && x<x2 && y>y1 && y < y2) {
+		return true;
+	}
+	return false;
+}
+
 bool MapIdCondition::EvaluateInternal(UnitItemInfo* uInfo,
 	Condition* arg1,
 	Condition* arg2)
 {
 	auto map_id = **Var_D2CLIENT_MapId();
-
+	//这里暂时没关系，不用动
+	//UnitAny* pUnit = D2CLIENT_GetPlayerUnit();
+	//if (pUnit->dwAct == 1 && inA2Town(uInfo->item->wX, uInfo->item->wY))
+	//{
+	//	map_id = 40;
+	//} else {
+	//	map_id = -1;
+	//}
+	//PrintText(Red, "%d", map_id);
 	return IntegerCompare(map_id, operation, mapId);
 }
 
@@ -1708,8 +1795,37 @@ bool MapIdCondition::EvaluateInternalFromPacket(ItemInfo* info,
 	Condition* arg1,
 	Condition* arg2)
 {
+	//主要是这里数据包触发的时候map_id还是上一个map的id,还有就是ItemInfo结构体中没有所属的区域
 	auto map_id = **Var_D2CLIENT_MapId();
-
+	//临时先用这种方式去解决吧，
+	UnitAny* pUnit = D2CLIENT_GetPlayerUnit();
+	if (pUnit->dwAct==1&& inA2Town(info->x,info->y))
+	{
+		map_id = 40;
+	}
+	else if (pUnit->dwAct == 2 && inA3Town(info->x, info->y))
+	{
+		map_id = 75;
+	}
+	else if (pUnit->dwAct == 3 && inA4Town(info->x, info->y))
+	{
+		map_id = 103;
+	}
+	else if (pUnit->dwAct == 4 && inA5Town(info->x, info->y))
+	{
+		map_id = 109;
+	}
+	else if (pUnit->dwAct == 0 && inA1Town(pUnit->pAct,info->x,info->y)) 
+	{
+		map_id = 1;
+	}
+	else 
+	{
+		map_id = -1;
+	}
+	//PrintText(Purple, "%d", map_id);
+	//char* level = UnicodeToAnsi(D2CLIENT_GetLevelName(pUnit->pPath->pRoom1->pRoom2->pLevel->dwLevelNo));
+	//PrintText(Purple, "%d,%s-%d,%d||%d,%d-%d,%d", map_id, level,info->x,info->y, pUnit->pPath->pRoom1->dwXStart, pUnit->pPath->pRoom1->dwYStart, pUnit->pPath->pRoom1->pRoom2->pLevel->dwPosX, pUnit->pPath->pRoom1->pRoom2->pLevel->dwPosY);
 	return IntegerCompare(map_id, operation, mapId);
 }
 

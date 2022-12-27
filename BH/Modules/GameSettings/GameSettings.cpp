@@ -21,6 +21,7 @@ void GameSettings::LoadConfig() {
 	BH::config->ReadToggle("Skill Bar", "None", false, GameSettings::Toggles["Skill Bar"]);
 	BH::config->ReadToggle("Skill Bar Disable", "None", false, GameSettings::Toggles["Skill Bar Disable"]);
 	BH::config->ReadToggle("Buff Timers", "None", false, GameSettings::Toggles["Buff Timers"]);
+	BH::config->ReadToggle("Screenshake", "None", true, GameSettings::Toggles["Screenshake"]);
 
 	BH::config->ReadToggle("Developer Aura", "None", true, GameSettings::Toggles["Developer Aura"]);
 	BH::config->ReadToggle("99 Aura", "None", true, GameSettings::Toggles["99 Aura"]);
@@ -62,6 +63,10 @@ void GameSettings::LoadGeneralTab() {
 	y += 15;
 	new Drawing::Checkhook(generalTab, x, y, &ScreenInfo::Toggles["Experience Meter"].state, "显示经验条");
 	new Drawing::Keyhook(generalTab, GameSettings::KeyHookOffset, y + 2, &ScreenInfo::Toggles["Experience Meter"].toggle, "");
+
+	y += 15;
+	new Drawing::Checkhook(generalTab, x, y, &GameSettings::Toggles["Screenshake"].state, "屏幕抖动");  //跟地图里面的“移除震动效果”是一样的
+	new Drawing::Keyhook(generalTab, GameSettings::KeyHookOffset, y + 2, &GameSettings::Toggles["Screenshake"].toggle, "");
 
 	// Quick Cast
 	y += 20;

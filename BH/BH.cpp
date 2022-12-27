@@ -2,6 +2,7 @@
 #include "BH.h"
 #include <Shlwapi.h>
 #include <psapi.h>
+#include <io.h>
 #include "D2Ptrs.h"
 #include "D2Intercepts.h"
 #include "D2Handlers.h"
@@ -23,6 +24,8 @@ bool BH::initialized;
 bool BH::cGuardLoaded;
 unsigned int BH::stash_left_fix;  //箱子left的offset,写给群友云c
 bool BH::inGameOnce;
+bool BH::inINVENTORY;
+DWORD BH::PD2Addr;
 WNDPROC BH::OldWNDPROC;
 //map<string, Toggle>* BH::MiscToggles;
 map<string, Toggle>* BH::MiscToggles2;
@@ -67,7 +70,7 @@ DWORD _stdcall languageManagement()
 	return *ptCurrentLanguage;
 }
 
-void  intToByte(int i, BYTE* bytes, int size = 4)
+void  BH::intToByte(int i, BYTE* bytes, int size)
 
 {
 	//byte[] bytes = new byte[4];
@@ -82,7 +85,7 @@ void  intToByte(int i, BYTE* bytes, int size = 4)
 unsigned int index = 0;
 bool BH::Startup(HINSTANCE instance, VOID* reserved) {
 
-	
+
 
 	//这一段是可以的，但是BH加载的时间段太后了。所以不生效，得参考PlugY.dll的加载方式才行（以后再说吧）by zyl 20220827
 	//BYTE patchBytesFunc[4] = {  };
@@ -124,7 +127,19 @@ DWORD WINAPI LoadMPQData(VOID* lpvoid) {
 	if (start_pos != std::string::npos) {
 		start_pos++;
 		if (start_pos < patchPath.size()) {
-			patchPath.replace(start_pos, patchPath.size() - start_pos, "Patch_D2.mpq");
+			patchPath.replace(start_pos, patchPath.size() - start_pos, "pd2data.mpq");   //为s6做准备
+		}
+	}
+
+	if (_access(patchPath.c_str(), 0) == -1)
+	{
+		patchPath.assign(szFileName);
+		start_pos = patchPath.rfind("\\");
+		if (start_pos != std::string::npos) {
+			start_pos++;
+			if (start_pos < patchPath.size()) {
+				patchPath.replace(start_pos, patchPath.size() - start_pos, "Patch_D2.mpq");
+			}
 		}
 	}
 
@@ -164,7 +179,7 @@ void BH::Initialize()
 	// Do this asynchronously because D2GFX_GetHwnd() will be null if
 	// we inject on process start
 	Task::Enqueue([]() -> void {
-		std::chrono::milliseconds duration(3000);  //这里改成3秒可以不会影响中文输入法(主要是PD2S5开始后有这样的情况)
+		std::chrono::milliseconds duration(5000);  //这里改成3秒可以不会影响中文输入法(主要是PD2S5开始后有这样的情况)
 		while (!D2GFX_GetHwnd()) {
 			std::this_thread::sleep_for(duration);
 		}
@@ -194,6 +209,8 @@ void BH::Initialize()
 	//new StashExport();   //这个先不要吧，跟交易Trade有关
 	new MapNotify();   //这个就是MapHack修改而来
 	new ChatColor();
+	new AutoTele();
+
 
 	BnetBools = ((Bnet*)moduleManager->Get("bnet"))->GetBools();
 	GamefilterBools = ((Gamefilter*)moduleManager->Get("gamefilter"))->GetBools();
@@ -217,6 +234,15 @@ void BH::Initialize()
 	// GameThread can potentially run oogDraw->Install, so create the thread after all
 	// loading/installation finishes.
 	//CreateThread(0, 0, GameThread, 0, 0, 0);  //这里去掉，参考HM的onJoinGame和ExitGame
+	
+	list<Drawing::UITab*>::iterator it1;
+	int i = 1;
+	for (it1 = settingsUI->Tabs.begin(); it1 != settingsUI->Tabs.end(); ++it1) {
+		if (i == 3)
+			break;
+		i++;
+	}
+	settingsUI->SetCurrentTab(*it1);
 
 	initialized = true;
 }

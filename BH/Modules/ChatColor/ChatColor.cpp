@@ -7,6 +7,7 @@
 #include "../../D2Helpers.h"
 #include "../ItemMover/ItemMover.h"
 #include "../Item/Item.h"
+#include "../GameSettings/GameSettings.h"
 
 
 #define INVENTORY_WIDTH  p_D2CLIENT_InventoryLayout->SlotWidth
@@ -113,11 +114,16 @@ int startLevel;
 unsigned int MercProtectSec;  //佣兵保护间隔
 
 void ChatColor::OnGameJoin() {
+	needOpenSkillbar = false;
+	isDamageShow = true;
 	inGame = true;
 	gameTimer = GetTickCount();
 	UnitAny* pUnit = D2CLIENT_GetPlayerUnit();
 	startExperience = (int)D2COMMON_GetUnitStat(pUnit, STAT_EXP, 0);
 	startLevel = (int)D2COMMON_GetUnitStat(pUnit, STAT_LEVEL, 0);
+
+
+	
 }
 
 void ChatColor::OnGameExit() {
@@ -141,14 +147,14 @@ void ChatColor::OnLoad() {
 	DBase->Install();
 	LoadConfig();
 	//状态写在这里吧
-	DWORD statNo[] = {   //状态id
+	DWORD statNo[] = {   //状态id，在states.txt里面，相关的是skills.txt和skilldesc.txt
 		1,2,9,11,19,21,28,55,58,60,
 		62,95,61,10,16,20,26,30,31,32,
 		38,51,88,94,101,117,120,128,129,130,
 		131,132,133,134,135,136,137,139,140,144,
 		145,153,157,158,159,177,8,14,33,34,
 		37,40,41,42,45,48,49,148,149,151,
-		161,162,3
+		161,162,3,188
 	};
 	DWORD color[] = {
 		1,1,1,1,1,1,1,1,1,1,
@@ -157,7 +163,7 @@ void ChatColor::OnLoad() {
 		3,3,3,3,3,3,3,3,3,3,
 		3,3,3,3,3,3,3,3,3,3,
 		3,3,3,3,3,3,3,3,3,3,
-		3,3,3
+		3,3,3,3
 	};
 	LPCSTR desc[] = {
 		"冻结","中毒","伤害加深","冰减速","虚弱","眩晕","审判光环","攻击反噬","生命偷取","衰老",
@@ -166,7 +172,7 @@ void ChatColor::OnLoad() {
 		"火焰神殿","冰冷神殿","毒素神殿","技能神殿","法力神殿","耐力神殿","经验神殿","狼人形态","熊人形态","暴风",
 		"毁天灭地","魔影斗篷","速度爆发","刀刃之盾","能量消解","变身娃娃","救助","白骨装甲","力量光环","祈祷",
 		"反抗光环","祝福瞄准","活力","专注光环","淨化","冥思","狂热光环","狼獾之心","橡木智者","飓风装甲",
-		"橡木智者","狼獾之心","抵抗火焰"
+		"橡木智者","狼獾之心","抵抗火焰","冰冷强化"
 	};
 
 	int statNoSize = sizeof(statNo) / sizeof(DWORD);  //动态数组大小
@@ -211,6 +217,7 @@ void ChatColor::LoadConfig() {
 	BH::config->ReadToggle("Rune Number", "None", true, Toggles["Rune Number"]);  //符文数字
 	BH::config->ReadToggle("Show Money", "None", false, Toggles["Show Money"]);  //贪婪模式,默认关闭
 	BH::config->ReadToggle("Death Back", "None", false, Toggles["Death Back"]);  //死亡立即回城,默认关闭
+	BH::config->ReadToggle("Damage Show", "None", false, Toggles["Damage Show"]);  //伤害显示开关，默认关闭吧，界面是写在ItemMover.cpp里面569行
 
 	BH::config->ReadInt("Merc Protect Sec", MercProtectSec, 3);   //默认3秒
 }
@@ -242,6 +249,7 @@ void ChatColor::OnChatPacketRecv(BYTE* packet, bool* block) {
 	}
 }
 
+
 void ChatColor::OnDraw()
 {
 	DrawMonitorInfo();
@@ -260,7 +268,6 @@ void ChatColor::OnLoop()
 	}
 	CheckD2WinEditBox();
 
-
 	if (BH::inGameOnce == false) {
 		BH::inGameOnce = true;
 		//*p_D2CLIENT_AutomapOn = TRUE;  //自动开启地图
@@ -269,6 +276,21 @@ void ChatColor::OnLoop()
 		//(*p_D2CLIENT_AutomapPos).y += 0;
 		dwPlayerId = D2CLIENT_GetPlayerUnit()->dwUnitId;
 
+	}
+
+	//这里加一个伤害显示开关
+	if (Toggles["Damage Show"].state!= isDamageShow) {
+		isDamageShow = Toggles["Damage Show"].state;
+		HMODULE hModule = GetModuleHandle("MDLL1.dll");  //还要判断一下本地有没有加载多页仓库
+		if (hModule) {
+			//这里做一下内存修改吧
+			BYTE bShowDamage = 0x00;
+			if (isDamageShow) bShowDamage = 0x01;
+			int patchAddr9 = Patch::GetDllOffset(MDLL1, 0x1200+0x9E24);  //数据区需要计算出一个初始地址，用OD调试出来是0x1200
+			//PrintText(Red, "debug:%d", patchAddr9);
+			BYTE patchBytes9[1] = { bShowDamage };
+			Patch::WriteBytes(patchAddr9, 1, patchBytes9);
+		}
 	}
 }
 
@@ -1084,6 +1106,7 @@ DWORD __stdcall ShowManaWithMyPattern(DWORD callBack, int min, int max) {
 	//显示符文数字，再加个开关
 	if(ChatColor::Toggles["Rune Number"].state)
 		drawRuneNum();
+
 
 	return callBack;
 

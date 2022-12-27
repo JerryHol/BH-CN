@@ -400,6 +400,7 @@ void ItemMover::AutoToBelt()
 	}
 }
 
+
 void ItemMover::OnLeftClick(bool up, int x, int y, bool* block) {
 	BnetData* pData = (*p_D2LAUNCH_BnData);
 	UnitAny* unit = D2CLIENT_GetPlayerUnit();
@@ -409,6 +410,8 @@ void ItemMover::OnLeftClick(bool up, int x, int y, bool* block) {
 		!Init()) {
 		return;
 	}
+
+	
 
 	//Init();
 
@@ -539,7 +542,14 @@ void ItemMover::LoadConfig() {
 	//BH::config->ReadInt("StashLeftFix", BH::stash_left_fix,0);
 }
 
+
+
+void ItemMover::OnGameJoin() {
+
+}
+
 void ItemMover::OnLoad() {
+
 	LoadConfig();
 	AutoBackTown = false;
 	Drawing::Texthook* colored_text;
@@ -568,6 +578,8 @@ void ItemMover::OnLoad() {
 	new Keyhook(settingsTab, keyhook_x, (y + 2), &ChatColor::Toggles["Show Money"].toggle, "");
 	new Checkhook(settingsTab, 4, (y += 15), &ChatColor::Toggles["Death Back"].state, "死亡立即回城");
 	new Keyhook(settingsTab, keyhook_x, (y + 2), &ChatColor::Toggles["Death Back"].toggle, "");
+	new Checkhook(settingsTab, 4, (y += 15), &ChatColor::Toggles["Damage Show"].state, "伤害显示(仅战网)");
+	new Keyhook(settingsTab, keyhook_x, (y + 2), &ChatColor::Toggles["Damage Show"].toggle, "");
 	// y += 15;
 	// new Drawing::Checkhook(settingsTab, 4, y, &ScreenInfo::Toggles["Quick Cast"].state, "Quick Cast");
 	// new Drawing::Keyhook(settingsTab, keyhook_x, y + 2, &ScreenInfo::Toggles["Quick Cast"].toggle, "");
@@ -703,9 +715,9 @@ void ItemMover::OnKey(bool up, BYTE key, LPARAM lParam, bool* block) {
 				*reinterpret_cast<int*>(PacketData + 1) = tpId;
 				*reinterpret_cast<WORD*>(PacketData + 5) = (WORD)unit->pPath->xPos;
 				*reinterpret_cast<WORD*>(PacketData + 9) = (WORD)unit->pPath->yPos;
-				if (tp_quantity < tp_warn_quantity) {
-					PrintText(Red, "TP tome is running low!");
-				}
+				//if (tp_quantity < tp_warn_quantity) {
+				//	PrintText(Red, "TP tome is running low!");
+				//}
 				D2NET_SendPacket(13, 0, PacketData);
 				*block = true;
 			}

@@ -295,6 +295,51 @@ struct InventoryLayout {
 	 };
 	 };*/
 
+struct InventoryLayoutDX //sizeof 0x14
+{
+	long int left;		//0x00
+	long int right;		//0x04
+	long int top;		//0x08
+	long int bottom;		//0x0C
+	union
+	{
+		struct
+		{
+			BYTE nGridX;		//0x10
+			BYTE nGridY;		//0x11
+		};
+		struct
+		{
+			BYTE nWidth;	//0x10
+			BYTE nHeight;	//0x11
+		};
+	};
+	WORD _align;		//0x12
+};
+
+struct InventoryTxt //sizeof 0xF0
+{
+	InventoryLayoutDX Inventory;		//0x00
+	InventoryLayoutDX Grid;			//0x14
+	union
+	{
+		struct
+		{
+			InventoryLayoutDX RightArm;		//0x28
+			InventoryLayoutDX Torso;			//0x3C
+			InventoryLayoutDX LeftArm;		//0x50
+			InventoryLayoutDX Head;			//0x64
+			InventoryLayoutDX Neck;			//0x78
+			InventoryLayoutDX RightHand;		//0x8C
+			InventoryLayoutDX LeftHand;		//0xA0
+			InventoryLayoutDX Belt;			//0xB4
+			InventoryLayoutDX Feet;			//0xC8
+			InventoryLayoutDX Gloves;			//0xDC
+		};
+		InventoryLayoutDX hItem[9];
+	};
+};
+
 struct BeltBox
 {
 	DWORD dwBoxLeft;			//0x00

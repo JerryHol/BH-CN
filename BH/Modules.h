@@ -14,4 +14,5 @@
 #include "Modules\ChatColor\ChatColor.h"
 #include "Modules/GameSettings/GameSettings.h"
 #include "Modules\MultiStash\MultiStash.h"
+#include "Modules\AutoTele\AutoTele.h"
 

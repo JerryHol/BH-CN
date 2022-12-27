@@ -383,6 +383,11 @@ void StatsDisplay::OnDraw()
 		int       lMax = static_cast<int>(D2COMMON_GetUnitStat(unit, STAT_MAXLIGHTNINGRESIST, 0)) + 75;
 		int       pMax = static_cast<int>(D2COMMON_GetUnitStat(unit, STAT_MAXPOISONRESIST, 0)) + 75;
 		int       pLengthReduce = static_cast<int>(D2COMMON_GetUnitStat(unit, STAT_POISONLENGTHREDUCTION, 0));
+		//S6赛季上限90，但是BH显示还是95，只能这么去处理先
+		if (fMax > 90) fMax = 90;
+		if (cMax > 90) cMax = 90;
+		if (lMax > 90) lMax = 90;
+		if (pMax > 90) pMax = 90;
 
 		Texthook::Draw(column1,
 			(y += 16),

@@ -99,7 +99,7 @@
     </ClCompile>
     <ClCompile Include="Modules\GameSettings\GameSettings.cpp">
       <Filter>Modules\GameSettings</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="Modules\MultiStash\MultiStash.cpp">
       <Filter>Modules\MultiStash</Filter>
     </ClCompile>
@@ -129,6 +129,9 @@
     </ClCompile>
     <ClCompile Include="Modules\MultiStash\PlugYFiles.cpp">
       <Filter>Modules\MultiStash</Filter>
+    </ClCompile>
+    <ClCompile Include="Modules\AutoTele\AutoTele.cpp">
+      <Filter>Modules\AutoTele</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -238,7 +241,7 @@
     </ClInclude>
     <ClInclude Include="Modules\GameSettings\GameSettings.h">
       <Filter>Modules\GameSettings</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="resource.h" />
     <ClInclude Include="Modules\MultiStash\MultiStash.h">
       <Filter>Modules\MultiStash</Filter>
@@ -269,6 +272,9 @@
     </ClInclude>
     <ClInclude Include="Modules\MultiStash\PlugYFiles.h">
       <Filter>Modules\MultiStash</Filter>
+    </ClInclude>
+    <ClInclude Include="Modules\AutoTele\AutoTele.h">
+      <Filter>Modules\AutoTele</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -352,6 +358,9 @@
     </Filter>
     <Filter Include="Modules\MultiStash">
       <UniqueIdentifier>{d5915309-ecc3-49fa-b3d2-c44b4a34865c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Modules\AutoTele">
+      <UniqueIdentifier>{4ff483c1-07a0-4047-acdd-4f8d4aed6245}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

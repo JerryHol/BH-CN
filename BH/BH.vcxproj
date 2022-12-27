@@ -181,6 +181,7 @@
     <ClCompile Include="Drawing\UI\UI.cpp" />
     <ClCompile Include="Drawing\UI\UITab.cpp" />
     <ClCompile Include="JSONObject.cpp" />
+    <ClCompile Include="Modules\AutoTele\AutoTele.cpp" />
     <ClCompile Include="Modules\Bnet\Bnet.cpp" />
     <ClCompile Include="Modules\ChatColor\ChatColor.cpp" />
     <ClCompile Include="Modules\Gamefilter\Gamefilter.cpp" />
@@ -246,6 +247,7 @@
     <ClInclude Include="JSONObject.h" />
     <ClInclude Include="lrucache.hpp" />
     <ClInclude Include="Modules.h" />
+    <ClInclude Include="Modules\AutoTele\AutoTele.h" />
     <ClInclude Include="Modules\Bnet\Bnet.h" />
     <ClInclude Include="Modules\ChatColor\ChatColor.h" />
     <ClInclude Include="Modules\Gamefilter\Gamefilter.h" />

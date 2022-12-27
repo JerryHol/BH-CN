@@ -8,7 +8,8 @@
 class ChatColor : public Module {
 private:
 	bool inGame;
-	//bool inGameOnce;  //要自己写一个是否进入游戏的选项
+	bool isDamageShow;
+	bool needOpenSkillbar;
 	std::map<string, unsigned int> whisperColors;
 public:
 	static std::map<std::string, Toggle> Toggles;

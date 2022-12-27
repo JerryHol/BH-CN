@@ -595,6 +595,10 @@ void ScreenInfo::OnAutomapDraw() {
 
 	CHAR szPing[10] = "";
 	sprintf_s(szPing, sizeof(szPing), "%d", *p_D2CLIENT_Ping);
+	CHAR szPPNum[10] = "";
+	if (*p_D2GAME_PPNums > 0) {
+		sprintf_s(szPPNum, sizeof(szPPNum), "%d", *p_D2GAME_PPNums);
+	}
 	
 	string tpcount = "∞";
 	if (!CheckRTP()) {
@@ -650,6 +654,7 @@ void ScreenInfo::OnAutomapDraw() {
 		{"TPCOUNT", tpcount},
 		{"IDCOUNT", idcount},
 		{"PING", szPing},
+		{"PPNUM", szPPNum},
 		{"GAMETIME", gameTime},
 		{"REALTIME", szTime},
 		{"AREALEVEL", szAreaLevel}

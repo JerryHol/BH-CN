@@ -286,10 +286,10 @@ void Gamefilter::OnOOGDraw() {
 		if (*showDiff || *showGs) {
 			D2WIN_SetTextSize(6);
 			DWORD dwListStart = (*p_D2MULTI_GameListControl)->dwSelectStart;
-			DWORD dwListEnd = filterVector.size() > 9 ? dwListStart + 9 : filterVector.size();
+			DWORD dwListEnd = filterVector.size() > 8 ? dwListStart + 8 : filterVector.size();
 			for (unsigned int i = dwListStart; i < dwListEnd; i++)
 			{
-				unsigned int uiYPos = 235 + (i - dwListStart) * 19;
+				unsigned int uiYPos = 233 + (i - dwListStart) * 20;
 				if (*showDiff) {
 					if ((filterVector.at(i)->dwStatus & 0x1000)) {
 						D2WIN_DrawText(L"恶梦", 530, uiYPos, Blue, -1);

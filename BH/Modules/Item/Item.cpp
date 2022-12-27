@@ -436,84 +436,84 @@ void Item::OrigGetItemName(UnitAny* item, string& itemName, char* code)
 		// We will also strip ilvls from these items
 		if (code[0] == 't' && code[1] == 's' && code[2] == 'c')  // town portal scroll
 		{
-			itemName = "\377c2**\377c0TP";
+			itemName = "\377c2**\377c0回城";
 			displayItemLevel = false;
 		}
 		else if (code[0] == 'i' && code[1] == 's' && code[2] == 'c')  // identify scroll
 		{
-			itemName = "\377c2**\377c0ID";
+			itemName = "\377c2**\377c0鉴定";
 			displayItemLevel = false;
 		}
 		else if (code[0] == 'v' && code[1] == 'p' && code[2] == 's')  // stamina potion
 		{
-			itemName = "Stam";
+			itemName = "体力药";
 			displayItemLevel = false;
 		}
 		else if (code[0] == 'y' && code[1] == 'p' && code[2] == 's')  // antidote potion
 		{
-			itemName = "Anti";
+			itemName = "解毒药";
 			displayItemLevel = false;
 		}
 		else if (code[0] == 'w' && code[1] == 'm' && code[2] == 's')  // thawing potion
 		{
-			itemName = "Thaw";
+			itemName = "融解药";
 			displayItemLevel = false;
 		}
 		else if (code[0] == 'g' && code[1] == 'p' && code[2] == 's')  // rancid gas potion
 		{
-			itemName = "Ranc";
+			itemName = "恶臭瓦斯";
 			displayItemLevel = false;
 		}
 		else if (code[0] == 'o' && code[1] == 'p' && code[2] == 's')  // oil potion
 		{
-			itemName = "Oil";
+			itemName = "油";
 			displayItemLevel = false;
 		}
 		else if (code[0] == 'g' && code[1] == 'p' && code[2] == 'm')  // choking gas potion
 		{
-			itemName = "Chok";
+			itemName = "窒息瓦斯";
 			displayItemLevel = false;
 		}
 		else if (code[0] == 'o' && code[1] == 'p' && code[2] == 'm')  // exploding potion
 		{
-			itemName = "Expl";
+			itemName = "爆炸药";
 			displayItemLevel = false;
 		}
 		else if (code[0] == 'g' && code[1] == 'p' && code[2] == 'l')  // strangling gas potion
 		{
-			itemName = "Stra";
+			itemName = "勒颈瓦斯";
 			displayItemLevel = false;
 		}
 		else if (code[0] == 'o' && code[1] == 'p' && code[2] == 'l')  // fulminating potion
 		{
-			itemName = "Fulm";
+			itemName = "猛爆药";
 			displayItemLevel = false;
 		}
 		else if (code[0] == 'h' && code[1] == 'p')  // healing potions
 		{
 			if (code[2] == '1')
 			{
-				itemName = "\377c1**\377c0Min Heal";
+				itemName = "\377c1**\377c0微红";
 				displayItemLevel = false;
 			}
 			else if (code[2] == '2')
 			{
-				itemName = "\377c1**\377c0Lt Heal";
+				itemName = "\377c1**\377c0小红";
 				displayItemLevel = false;
 			}
 			else if (code[2] == '3')
 			{
-				itemName = "\377c1**\377c0Heal";
+				itemName = "\377c1**\377c0中红";
 				displayItemLevel = false;
 			}
 			else if (code[2] == '4')
 			{
-				itemName = "\377c1**\377c0Gt Heal";
+				itemName = "\377c1**\377c0大红";
 				displayItemLevel = false;
 			}
 			else if (code[2] == '5')
 			{
-				itemName = "\377c1**\377c0Sup Heal";
+				itemName = "\377c1**\377c0超红";
 				displayItemLevel = false;
 			}
 		}
@@ -521,27 +521,27 @@ void Item::OrigGetItemName(UnitAny* item, string& itemName, char* code)
 		{
 			if (code[2] == '1')
 			{
-				itemName = "\377c3**\377c0Min Mana";
+				itemName = "\377c3**\377c0微蓝";
 				displayItemLevel = false;
 			}
 			else if (code[2] == '2')
 			{
-				itemName = "\377c3**\377c0Lt Mana";
+				itemName = "\377c3**\377c0小蓝";
 				displayItemLevel = false;
 			}
 			else if (code[2] == '3')
 			{
-				itemName = "\377c3**\377c0Mana";
+				itemName = "\377c3**\377c0中蓝";
 				displayItemLevel = false;
 			}
 			else if (code[2] == '4')
 			{
-				itemName = "\377c3**\377c0Gt Mana";
+				itemName = "\377c3**\377c0大蓝";
 				displayItemLevel = false;
 			}
 			else if (code[2] == '5')
 			{
-				itemName = "\377c3**\377c0Sup Mana";
+				itemName = "\377c3**\377c0超蓝";
 				displayItemLevel = false;
 			}
 		}
@@ -549,12 +549,12 @@ void Item::OrigGetItemName(UnitAny* item, string& itemName, char* code)
 		{
 			if (code[2] == 's')
 			{
-				itemName = "\377c;**\377c0Rejuv";
+				itemName = "\377c;**\377c0小紫";
 				displayItemLevel = false;
 			}
 			else if (code[2] == 'l')
 			{
-				itemName = "\377c;**\377c0FULL";
+				itemName = "\377c;**\377c0大紫";
 				displayItemLevel = false;
 			}
 		}
@@ -1660,26 +1660,7 @@ BOOL StatIsCorrupted(int nStat, int nCorruptor)
 	if (nCorruptor < 0 || nCorruptor >= NUM_CORRUPTIONS)
 		return false;
 
-	// all res
-	if (nCorruptor == 49) {
-		if (nStat == STAT_FIRERESIST || nStat == STAT_COLDRESIST || nStat == STAT_LIGHTNINGRESIST || nStat == STAT_POISONRESIST) {
-			return true;
-		}
-	}
-	// All stats
-	if (nCorruptor == 63) {
-		if (nStat == STAT_STRENGTH || nStat == STAT_DEXTERITY || nStat == STAT_VITALITY || nStat == STAT_ENERGY) {
-			return true;
-		}
-	}
-	// All res max
-	if (nCorruptor == 70) {
-		if (nStat == STAT_MAXFIRERESIST || nStat == STAT_MAXCOLDRESIST || nStat == STAT_MAXLIGHTNINGRESIST || nStat == STAT_MAXPOISONRESIST) {
-			return true;
-		}
-	}
-
-	for (int j = 0; j < 2; j++) {
+	for (int j = 0; j < 6; j++) {
 		if (CorruptionMods[nCorruptor][j] < 0) {
 			continue;
 		}

@@ -369,44 +369,6 @@ void MapNotify::OnLoop() {
 		break;
 	}
 
-	//这里看看能不能画线（还是提示一下先吧）
-	if (unit->pPath->pRoom1->pRoom2->pLevel->dwLevelNo == MAP_A2_ARCANE_SANCTUARY
-		&& currLevelNo["所在场景"]!= MAP_A2_ARCANE_SANCTUARY
-		) {  //A2的神秘庇护所
-		if (tipCells.find(357) == tipCells.end()) {
-			return;
-		}
-		POINT objPos = tipCells[357];   //日记的pos
-		//画不了，先用提示的吧
-				/*32697   25034  右下
-				31305   24362  左上
-				32673   24350  右上
-				31313   25030  左下*/
-		int diffX = 32000;
-		int diffY = 24500;
-		string strPos = "哪里";
-		if ((&objPos)->x < diffX)  //左边
-		{
-			if ((&objPos)->y < diffY)  //上
-			{
-				strPos = "左上";
-			}
-			else { //下
-				strPos = "左下";
-			}
-		}
-		else {   //右边
-			if ((&objPos)->y < diffY)  //上
-			{
-				strPos = "右上";
-			}
-			else { //下
-				strPos = "右下";
-			}
-		}
-		PrintText(White, "召唤者：我在\377c2%s\377c0，有本事来打我啊！", strPos.c_str());
-	}
-	currLevelNo["所在场景"] = unit->pPath->pRoom1->pRoom2->pLevel->dwLevelNo;
 }
 
 bool IsObjectChest(ObjectTxt* obj)
@@ -649,9 +611,14 @@ void MapNotify::OnAutomapDraw() {
 						|| unit->dwTxtFileNo == 994   //994 恐惧之影，995已经显示了
 						|| unit->dwTxtFileNo == 734   //734 女伯爵
 						|| unit->dwTxtFileNo == 526   //526 尼拉塞克
+						|| unit->dwTxtFileNo == 402   //402 铁匠
+						|| unit->dwTxtFileNo == 409   //409 A5敲石头那个boss
+						|| unit->dwTxtFileNo == 1025   //1025 柏克 Borq the Consumed  s6新图boss
+						|| unit->dwTxtFileNo == 1026   //1026 远古九头水蛇 Ancient Cistern Hydra  s6新图boss
 						|| (unit->dwTxtFileNo == 391 && mdhm->fBoss==1 && mdhm->fUnique)   //391 母牛之王
 						) {
 						if ((unit->dwTxtFileNo>=546&& unit->dwTxtFileNo<=550)   //xx污秽者=>不显示
+							|| (unit->dwTxtFileNo == 1051)   //xx污秽者=>不显示  s6新加的T4怪物
 							|| (unit->dwTxtFileNo >= 880 && unit->dwTxtFileNo <= 881)   //血蛆幼生、血蛆之蛋=>不显示
 							|| (unit->dwTxtFileNo >= 790 && unit->dwTxtFileNo <= 794)   //被困的灵魂(大黑毛旁边的)=>不显示
 							|| (unit->dwTxtFileNo == 754)   //血石魔=>不显示
@@ -665,7 +632,12 @@ void MapNotify::OnAutomapDraw() {
 						}
 						else {
 							wchar_t* name = mdhm->wszMonName;
-							superUniqName = UnicodeToAnsi(name);
+
+							wchar_t wszTemp[512] = { L"\0" };
+							wsprintfW(wszTemp, L"%s", name);
+							//wsprintfW(wszTemp, L"%s(%d)", name,unit->dwTxtFileNo);  //临时显示一下txtfileNo
+
+							superUniqName = UnicodeToAnsi(wszTemp);
 							for (int i = 0; i < 100; i++) {  //by zyl 这里解决名字里面有颜色的代码
 								int pos = superUniqName.find("ÿ");
 								if (pos >= 0) {
@@ -718,8 +690,8 @@ void MapNotify::OnAutomapDraw() {
 				else if (unit->dwType == UNIT_OBJECT && unit->dwTxtFileNo == 593){
 					//这个是 暗黑尖塔事件
 					string superUniqName="黑暗尖塔";
-					if (eventMap.find(unit->dwUnitId) == eventMap.end()) {
-						eventMap[unit->dwUnitId] = superUniqName;
+					if (eventMap.find(unit->dwTxtFileNo) == eventMap.end()) {  //黑暗尖塔的unitId会变的，所以直接用txtFileNo去判断了，反正只有1个
+						eventMap[unit->dwTxtFileNo] = superUniqName;
 						PrintText(White, "哟~ \377c1%s\377c0 出现了！！！", superUniqName.c_str()); //string需要转成cstr，不然一些buffer的地方会报错
 					}
 					xPos = unit->pObjectPath->dwPosX;
@@ -842,7 +814,16 @@ void MapNotify::OnAutomapDraw() {
 				std::string nameStr = name;
 				delete[] name;
 
-				automapBuffer.push([nameStr, tombStar, unitLoc]()->void {
+				automapBuffer.push([nameStr, tombStar, unitLoc,MyPos]()->void {
+					//POINT test1 = *p_D2CLIENT_AutomapPos;  //地图的中心点位置好像
+					int automapMode = *p_D2CLIENT_AutomapMode;   //10是大地图，20是小地图
+					long x1 = MyPos.x;
+					long y1 = MyPos.y;
+					long x2 = unitLoc.x;
+					long y2 = unitLoc.y;
+					long len = sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));  //求直线距离
+					if (automapMode==20 && len > 200) return;   //小地图上直线距离大于人物200码的不显示名称
+
 					Texthook::Draw(unitLoc.x, unitLoc.y - 15, Center, 6, Gold, "%s%s", nameStr.c_str(), tombStar.c_str());
 					});
 			}
