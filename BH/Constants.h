@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 #define BH_VERSION "ZYLPD2 0.1"
-#define SETTINGS_TEXT "ZYLPD2设置"
+#define SETTINGS_TEXT "Settings"   //更改游戏内小条条名字
 
 //#define CODE_PAGE 1252 // windows-1252	ANSI Latin 1; Western European (Windows)
 #define CODE_PAGE 936 // windows-1252	ANSI Latin 1; Western European (Windows)
